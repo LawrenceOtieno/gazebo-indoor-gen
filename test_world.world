@@ -20,6 +20,51 @@
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/X4 UAV Config 1</uri>
       <name>drone</name>
       <pose>0 0 0.2 0 0 0</pose>
+
+      <plugin
+        filename="gz-sim-sensors-system"
+        name="gz::sim::systems::Sensors">
+        <render_engine>ogre2</render_engine>
+      </plugin>
+
+      <plugin
+        filename="gz-sim-multicopter-control-system"
+        name="gz::sim::systems::MulticopterVelocityControl">
+        <robotNamespace>drone</robotNamespace>
+        <commandSubTopic>cmd_vel</commandSubTopic>
+        <enableControl>1</enableControl>
+        <comLinkName>base_link</comLinkName>
+        <velocityGain>2.7 2.7 2.7</velocityGain>
+        <attitudeGain>2 3 0.15</attitudeGain>
+        <angularRateGain>0.4 0.52 0.18</angularRateGain>
+        
+        <rotorConfiguration>
+          <rotor>
+            <jointName>rotor_0_joint</jointName>
+            <forceConstant>8.54858e-06</forceConstant>
+            <momentConstant>0.016</momentConstant>
+            <direction>1</direction>
+          </rotor>
+          <rotor>
+            <jointName>rotor_1_joint</jointName>
+            <forceConstant>8.54858e-06</forceConstant>
+            <momentConstant>0.016</momentConstant>
+            <direction>1</direction>
+          </rotor>
+          <rotor>
+            <jointName>rotor_2_joint</jointName>
+            <forceConstant>8.54858e-06</forceConstant>
+            <momentConstant>0.016</momentConstant>
+            <direction>-1</direction>
+          </rotor>
+          <rotor>
+            <jointName>rotor_3_joint</jointName>
+            <forceConstant>8.54858e-06</forceConstant>
+            <momentConstant>0.016</momentConstant>
+            <direction>-1</direction>
+          </rotor>
+        </rotorConfiguration>
+      </plugin>
     </include>
 
     <include>
@@ -34,57 +79,10 @@
       <pose>1.2 0.5 0 0 0 1.57</pose>
     </include>
 
-    <model name="wall_north">
-      <pose>2.5 0 1 0 0 1.57</pose>
-      <static>1</static>
-      <link name="link">
-        <collision name="collision">
-          <geometry><box><size>5 0.1 2</size></box></geometry>
-        </collision>
-        <visual name="visual">
-          <geometry><box><size>5 0.1 2</size></box></geometry>
-        </visual>
-      </link>
-    </model>
-
-    <model name="wall_south">
-      <pose>-2.5 0 1 0 0 1.57</pose>
-      <static>1</static>
-      <link name="link">
-        <collision name="collision">
-          <geometry><box><size>5 0.1 2</size></box></geometry>
-        </collision>
-        <visual name="visual">
-          <geometry><box><size>5 0.1 2</size></box></geometry>
-        </visual>
-      </link>
-    </model>
-
-    <model name="wall_east">
-      <pose>0 2.5 1 0 0 0</pose>
-      <static>1</static>
-      <link name="link">
-        <collision name="collision">
-          <geometry><box><size>5 0.1 2</size></box></geometry>
-        </collision>
-        <visual name="visual">
-          <geometry><box><size>5 0.1 2</size></box></geometry>
-        </visual>
-      </link>
-    </model>
-
-    <model name="wall_west">
-      <pose>0 -2.5 1 0 0 0</pose>
-      <static>1</static>
-      <link name="link">
-        <collision name="collision">
-          <geometry><box><size>5 0.1 2</size></box></geometry>
-        </collision>
-        <visual name="visual">
-          <geometry><box><size>5 0.1 2</size></box></geometry>
-        </visual>
-      </link>
-    </model>
+    <model name="wall_n"><pose>2.5 0 1 0 0 1.57</pose><static>1</static><link name="l"><visual name="v"><geometry><box><size>5 0.1 2</size></box></geometry></visual><collision name="c"><geometry><box><size>5 0.1 2</size></box></geometry></collision></link></model>
+    <model name="wall_s"><pose>-2.5 0 1 0 0 1.57</pose><static>1</static><link name="l"><visual name="v"><geometry><box><size>5 0.1 2</size></box></geometry></visual><collision name="c"><geometry><box><size>5 0.1 2</size></box></geometry></collision></link></model>
+    <model name="wall_e"><pose>0 2.5 1 0 0 0</pose><static>1</static><link name="l"><visual name="v"><geometry><box><size>5 0.1 2</size></box></geometry></visual><collision name="c"><geometry><box><size>5 0.1 2</size></box></geometry></collision></link></model>
+    <model name="wall_w"><pose>0 -2.5 1 0 0 0</pose><static>1</static><link name="l"><visual name="v"><geometry><box><size>5 0.1 2</size></box></geometry></visual><collision name="c"><geometry><box><size>5 0.1 2</size></box></geometry></collision></link></model>
 
   </world>
 </sdf>
