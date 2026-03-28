@@ -1,88 +1,71 @@
 <?xml version="1.0" ?>
-<sdf version="1.6">
-  <world name="default">
-    <physics name="default_physics" default="1" type="ode">
+<sdf version="1.8">
+  <world name="drone_indoor_world">
+    <physics name="1ms" type="ignored">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
-      <real_time_update_rate>1000.0</real_time_update_rate>
     </physics>
 
-    <gravity>0 0 -9.8</gravity>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
 
-    <include>
-      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/sun</uri>
-    </include>
-    <include>
-      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/ground plane</uri>
-    </include>
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
 
-    <include>
-      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/X4 UAV Config 1</uri>
-      <name>drone</name>
-      <pose>0 0 0.2 0 0 0</pose>
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
 
-      <plugin
-        filename="gz-sim-sensors-system"
-        name="gz::sim::systems::Sensors">
-        <render_engine>ogre2</render_engine>
-      </plugin>
-
-      <plugin
-        filename="gz-sim-multicopter-control-system"
-        name="gz::sim::systems::MulticopterVelocityControl">
-        <robotNamespace>drone</robotNamespace>
-        <commandSubTopic>cmd_vel</commandSubTopic>
-        <enableControl>1</enableControl>
-        <comLinkName>base_link</comLinkName>
-        <velocityGain>2.7 2.7 2.7</velocityGain>
-        <attitudeGain>2 3 0.15</attitudeGain>
-        <angularRateGain>0.4 0.52 0.18</angularRateGain>
+    <model name="drone">
+      <pose>0 0 0.5 0 0 0</pose>
+      <link name="base_link">
+        <collision name="collision">
+          <geometry><box><size>0.4 0.4 0.1</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.4 0.4 0.1</size></box></geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+          </material>
+        </visual>
         
-        <rotorConfiguration>
-          <rotor>
-            <jointName>rotor_0_joint</jointName>
-            <forceConstant>8.54858e-06</forceConstant>
-            <momentConstant>0.016</momentConstant>
-            <direction>1</direction>
-          </rotor>
-          <rotor>
-            <jointName>rotor_1_joint</jointName>
-            <forceConstant>8.54858e-06</forceConstant>
-            <momentConstant>0.016</momentConstant>
-            <direction>1</direction>
-          </rotor>
-          <rotor>
-            <jointName>rotor_2_joint</jointName>
-            <forceConstant>8.54858e-06</forceConstant>
-            <momentConstant>0.016</momentConstant>
-            <direction>-1</direction>
-          </rotor>
-          <rotor>
-            <jointName>rotor_3_joint</jointName>
-            <forceConstant>8.54858e-06</forceConstant>
-            <momentConstant>0.016</momentConstant>
-            <direction>-1</direction>
-          </rotor>
-        </rotorConfiguration>
+        <sensor name="camera" type="camera">
+          <pose>0.2 0 0 0 0 0</pose>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <visualize>true</visualize>
+          <topic>model/drone/device/depth_camera/image</topic>
+        </sensor>
+      </link>
+      
+      <plugin
+        filename="gz-sim-velocity-control-system"
+        name="gz::sim::systems::VelocityControl">
+        <link_name>base_link</link_name>
       </plugin>
-    </include>
-
-    <include>
-      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/table</uri>
-      <name>table</name>
-      <pose>1.2 1.2 0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/chair</uri>
-      <name>chair</name>
-      <pose>1.2 0.5 0 0 0 1.57</pose>
-    </include>
-
-    <model name="wall_n"><pose>2.5 0 1 0 0 1.57</pose><static>1</static><link name="l"><visual name="v"><geometry><box><size>5 0.1 2</size></box></geometry></visual><collision name="c"><geometry><box><size>5 0.1 2</size></box></geometry></collision></link></model>
-    <model name="wall_s"><pose>-2.5 0 1 0 0 1.57</pose><static>1</static><link name="l"><visual name="v"><geometry><box><size>5 0.1 2</size></box></geometry></visual><collision name="c"><geometry><box><size>5 0.1 2</size></box></geometry></collision></link></model>
-    <model name="wall_e"><pose>0 2.5 1 0 0 0</pose><static>1</static><link name="l"><visual name="v"><geometry><box><size>5 0.1 2</size></box></geometry></visual><collision name="c"><geometry><box><size>5 0.1 2</size></box></geometry></collision></link></model>
-    <model name="wall_w"><pose>0 -2.5 1 0 0 0</pose><static>1</static><link name="l"><visual name="v"><geometry><box><size>5 0.1 2</size></box></geometry></visual><collision name="c"><geometry><box><size>5 0.1 2</size></box></geometry></collision></link></model>
+    </model>
 
   </world>
 </sdf>
