@@ -37,44 +37,33 @@
       <pose>7 0 0 0 0 0</pose>
       <link name="wall_l"><pose>0 3 1.5 0 0 0</pose><visual name="v"><geometry><box><size>14 0.1 3</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient></material></visual><collision name="c"><geometry><box><size>14 0.1 3</size></box></geometry></collision></link>
       <link name="wall_r"><pose>0 -3 1.5 0 0 0</pose><visual name="v"><geometry><box><size>14 0.1 3</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient></material></visual><collision name="c"><geometry><box><size>14 0.1 3</size></box></geometry></collision></link>
-      <link name="room1_wall"><pose>-2 1.8 1.5 0 0 1.57</pose><visual name="v"><geometry><box><size>2.5 0.1 3</size></box></geometry><material><ambient>0.8 0.8 0.8 1</ambient></material></visual><collision name="c"><geometry><box><size>2.5 0.1 3</size></box></geometry></collision></link>
-      <link name="room2_wall"><pose>2 -1.8 1.5 0 0 1.57</pose><visual name="v"><geometry><box><size>2.5 0.1 3</size></box></geometry><material><ambient>0.8 0.8 0.8 1</ambient></material></visual><collision name="c"><geometry><box><size>2.5 0.1 3</size></box></geometry></collision></link>
       <link name="ceiling"><pose>0 0 3 0 0 0</pose><visual name="v"><geometry><box><size>14 6 0.1</size></box></geometry><material><ambient>0.6 0.6 0.6 0.1</ambient></material></visual></link>
     </model>
 
-    <model name="desk_1">
+    <model name="furniture_desk_1">
       <static>true</static>
-      <pose>6.0 1.0 0 0 0 0.2</pose>
+      <pose>6.0 1.0 0.01 0 0 0</pose> 
       <link name="link">
-        <visual name="top"><pose>0 0 0.75 0 0 0</pose><geometry><box><size>1.4 0.7 0.05</size></box></geometry><material><ambient>0.3 0.2 0.1 1</ambient></material></visual>
-        <visual name="base"><pose>0 0 0.35 0 0 0</pose><geometry><box><size>1.2 0.5 0.7</size></box></geometry></visual>
+        <visual name="top"><pose>0 0 0.75 0 0 0</pose><geometry><box><size>1.4 0.7 0.05</size></box></geometry><material><ambient>0.3 0.2 0.1 1</ambient><diffuse>0.4 0.2 0.1 1</diffuse></material></visual>
+        <visual name="base"><pose>0 0 0.35 0 0 0</pose><geometry><box><size>1.2 0.5 0.7</size></box></geometry><material><ambient>0.1 0.1 0.1 1</ambient></material></visual>
         <collision name="c"><pose>0 0 0.4 0 0 0</pose><geometry><box><size>1.4 0.7 0.8</size></box></geometry></collision>
       </link>
     </model>
 
-    <model name="desk_2">
+    <model name="furniture_desk_2">
       <static>true</static>
-      <pose>10.0 -1.0 0 0 0 -0.2</pose>
+      <pose>10.0 -1.0 0.01 0 0 0</pose>
       <link name="link">
-        <visual name="top"><pose>0 0 0.75 0 0 0</pose><geometry><box><size>1.4 0.7 0.05</size></box></geometry><material><ambient>0.3 0.2 0.1 1</ambient></material></visual>
-        <visual name="base"><pose>0 0 0.35 0 0 0</pose><geometry><box><size>1.2 0.5 0.7</size></box></geometry></visual>
+        <visual name="top"><pose>0 0 0.75 0 0 0</pose><geometry><box><size>1.4 0.7 0.05</size></box></geometry><material><ambient>0.3 0.2 0.1 1</ambient><diffuse>0.4 0.2 0.1 1</diffuse></material></visual>
+        <visual name="base"><pose>0 0 0.35 0 0 0</pose><geometry><box><size>1.2 0.5 0.7</size></box></geometry><material><ambient>0.1 0.1 0.1 1</ambient></material></material></visual>
         <collision name="c"><pose>0 0 0.4 0 0 0</pose><geometry><box><size>1.4 0.7 0.8</size></box></geometry></collision>
       </link>
-    </model>
-
-    <model name="launch_tube">
-      <static>true</static>
-      <pose>0 0 0.5 0 1.5708 0</pose> 
-      <link name="link">
-        <visual name="v"><geometry><cylinder><radius>0.4</radius><length>2.5</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient></material></visual>
-        </link>
     </model>
 
     <model name="drone">
       <pose>1.5 0 0.5 0 0 0</pose> 
       <link name="base_link">
         <visual name="visual"><geometry><box><size>0.3 0.3 0.1</size></box></geometry><material><ambient>0 1 0 1</ambient></material></visual>
-        
         <sensor name="camera" type="camera">
           <pose>0.15 0 0 0 0.2 0</pose>
           <camera>
@@ -86,7 +75,6 @@
           <update_rate>30</update_rate>
           <topic>camera</topic>
         </sensor>
-
         <sensor name="lidar" type="gpu_lidar">
           <pose>0.15 0 0 0 0 0</pose>
           <topic>/model/drone/device/lidar/scan</topic>
