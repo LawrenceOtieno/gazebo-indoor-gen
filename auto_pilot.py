@@ -34,5 +34,5 @@ if __name__ == '__main__':
         pilot = AutoPilot()
         while True: time.sleep(0.1)
     except KeyboardInterrupt:
-        print('
-Stopping Auto-Pilot...')
+        print()
+        print('Stopping Auto-Pilot...')
