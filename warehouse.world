@@ -1,0 +1,34 @@
+<model name="warehouse_maze">
+      <static>true</static>
+      <pose>8 0 0 0 0 0</pose>
+
+      <link name="shelf_left">
+        <pose>0 2 2 0 0 0</pose>
+        <visual name="v">
+          <geometry><box><size>10 0.5 4</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material>
+        </visual>
+        <collision name="c"><geometry><box><size>10 0.5 4</size></box></geometry></collision>
+      </link>
+
+      <link name="shelf_right">
+        <pose>0 -2 2 0 0 0</pose>
+        <visual name="v">
+          <geometry><box><size>10 0.5 4</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material>
+        </visual>
+        <collision name="c"><geometry><box><size>10 0.5 4</size></box></geometry></collision>
+      </link>
+
+      <link name="crate_1">
+        <pose>2 0.5 0.5 0 0 0.4</pose>
+        <visual name="v"><geometry><box><size>1 1 1</size></box></geometry><material><ambient>0.5 0.3 0.1 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>1 1 1</size></box></geometry></collision>
+      </link>
+
+      <link name="crate_2">
+        <pose>5 -0.8 0.5 0 0 -0.2</pose>
+        <visual name="v"><geometry><box><size>1 1 1</size></box></geometry><material><ambient>0.5 0.3 0.1 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>1 1 1</size></box></geometry></collision>
+      </link>
+    </model>
