@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <model name="beam_chair">
+    <static>true</static>
+    <link name="link">
+      <visual name="beam">
+        <geometry><box><size>2.0 0.1 0.1</size></box></geometry>
+        <material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
+      </visual>
+      <collision name="beam_col">
+        <geometry><box><size>2.0 0.1 0.1</size></box></geometry>
+      </collision>
+      <visual name="seat1">
+        <pose>0.6 0 0.2 0 0 0</pose>
+        <geometry><box><size>0.5 0.5 0.4</size></box></geometry>
+        <material><ambient>0 0 1 1</ambient><diffuse>0 0 1 1</diffuse></material>
+      </visual>
+      <collision name="seat1_col">
+        <pose>0.6 0 0.2 0 0 0</pose>
+        <geometry><box><size>0.5 0.5 0.4</size></box></geometry>
+      </collision>
+      <visual name="seat2">
+        <pose>-0.6 0 0.2 0 0 0</pose>
+        <geometry><box><size>0.5 0.5 0.4</size></box></geometry>
+        <material><ambient>0 0 1 1</ambient><diffuse>0 0 1 1</diffuse></material>
+      </visual>
+      <collision name="seat2_col">
+        <pose>-0.6 0 0.2 0 0 0</pose>
+        <geometry><box><size>0.5 0.5 0.4</size></box></geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>
