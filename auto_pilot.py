@@ -1,46 +1,70 @@
-import os
 import sys
 import time
-import subprocess
+import numpy as np
 
 # Force Python to see Gazebo libraries
 sys.path.append('/usr/lib/python3/dist-packages')
 
-def get_lidar_distance():
-    """Gets a single Lidar reading using the Gazebo CLI"""
-    try:
-        # Request one message from the Lidar topic
-        cmd = "gz topic -t /model/drone/device/lidar/scan -n 1"
-        output = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT).decode()
-        
-        # Look for the 'ranges' data in the text output
-        if "ranges:" in output:
-            ranges_str = output.split("ranges: [")[1].split("]")[0]
-            ranges = [float(x) for x in ranges_str.split(",")]
-            # Return the middle ray (center of drone's view)
-            return ranges[len(ranges)//2]
-    except Exception:
-        return 10.0 # Default to clear path if error
-    return 10.0
+from gz.transport13 import Node
+from gz.msgs10.laserscan_pb2 import LaserScan
+from gz.msgs10.twist_pb2 import Twist
 
-def run_pilot():
-    print('🤖 Auto-Pilot Engaged (CLI Mode): Flying the Warehouse...')
-    
-    while True:
-        dist = get_lidar_distance()
+class AutoPilot:
+    def __init__(self):
+        self.node = Node()
+        self.pub = self.node.advertise("/model/drone/cmd_vel", Twist)
         
-        if dist < 2.5:
-            print(f'🚧 Obstacle at {dist:.2f}m! Turning...')
-            # Using the exact same CLI method that made the launcher work:
-            os.system('gz topic -t "/model/drone/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.2}, angular: {z: 0.6}"')
+        # Subscribing to the Lidar topic defined in your warehouse.world
+        lidar_topic = "/model/drone/device/lidar/scan"
+        self.node.subscribe(LaserScan, lidar_topic, self.lidar_callback)
+        
+        # AGGRESSIVE TUNING PARAMETERS
+        self.target_linear_vel = 1.8   # Faster forward speed (m/s)
+        self.turn_sensitivity = 2.5    # How hard it swerves (Multiplier)
+        self.safety_distance = 2.2     # Distance in meters to trigger a turn
+        
+        print(f"🤖 Auto-Pilot Active on {lidar_topic}")
+        print(f"⚙️  Settings: Speed={self.target_linear_vel}, Sensitivity={self.turn_sensitivity}")
+
+    def lidar_callback(self, msg):
+        ranges = np.array(msg.ranges)
+        
+        # 1. Split Lidar into 3 sectors: Left, Center (Front), Right
+        # Your lidar has 360 samples (-3.14 to 3.14 radians)
+        # Center is roughly indices 150 to 210
+        center_idx = len(ranges) // 2
+        front_sector = ranges[center_idx-30 : center_idx+30]
+        left_sector  = ranges[center_idx+31 : center_idx+90]
+        right_sector = ranges[center_idx-90 : center_idx-31]
+
+        # 2. Find minimum distance in the front
+        min_front = np.min(front_sector)
+        
+        drive_cmd = Twist()
+
+        if min_front < self.safety_distance:
+            # OBSTACLE DETECTED: Swerve aggressively
+            drive_cmd.linear.x = 0.5  # Slow down while turning
+            
+            # Decide direction based on which side has more clear space
+            if np.mean(left_sector) > np.mean(right_sector):
+                drive_cmd.angular.z = self.turn_sensitivity  # Turn Left
+            else:
+                drive_cmd.angular.z = -self.turn_sensitivity # Turn Right
+                
+            print(f"🚨 AVOIDING OBSTACLE! Dist: {min_front:.2f}m | Swerving...")
         else:
-            # Clear path
-            os.system('gz topic -t "/model/drone/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.8}, angular: {z: 0.0}"')
-        
-        time.sleep(0.1) # Check 10 times per second
+            # PATH CLEAR: Full speed ahead with minor corrections
+            drive_cmd.linear.x = self.target_linear_vel
+            drive_cmd.angular.z = 0.0
+            
+        # Publish the command
+        self.pub.publish(drive_cmd)
 
 if __name__ == "__main__":
+    pilot = AutoPilot()
     try:
-        run_pilot()
+        while True:
+            time.sleep(0.1)
     except KeyboardInterrupt:
-        print('\nStopping Pilot...')
+        print("\n--- PILOT SHUTDOWN ---")
