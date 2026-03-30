@@ -1,42 +1,46 @@
+import os
 import sys
 import time
+import subprocess
+
+# Force Python to see Gazebo libraries
 sys.path.append('/usr/lib/python3/dist-packages')
 
-from gz.transport13 import Node
-from gz.msgs10.twist_pb2 import Twist
-from gz.msgs10.laserscan_pb2 import LaserScan
-
-class AutoPilot:
-    def __init__(self):
-        self.node = Node()
-        # Instead of passing the variable 'Twist', we pass the class name directly
-        # and provide the type string as the second argument
-        self.pub = self.node.advertise(Twist, '/model/drone/cmd_vel')
-        self.node.subscribe(LaserScan, '/model/drone/device/lidar/scan', self.sensor_callback)
-        print('🤖 Auto-Pilot Engaged: Flying the Warehouse...')
-
-    def sensor_callback(self, msg):
-        # Local import inside the function can sometimes bypass the Descriptor error
-        from gz.msgs10.twist_pb2 import Twist
+def get_lidar_distance():
+    """Gets a single Lidar reading using the Gazebo CLI"""
+    try:
+        # Request one message from the Lidar topic
+        cmd = "gz topic -t /model/drone/device/lidar/scan -n 1"
+        output = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT).decode()
         
-        if not msg.ranges: return
-        center_index = len(msg.ranges) // 2
-        front_distance = msg.ranges[center_index]
+        # Look for the 'ranges' data in the text output
+        if "ranges:" in output:
+            ranges_str = output.split("ranges: [")[1].split("]")[0]
+            ranges = [float(x) for x in ranges_str.split(",")]
+            # Return the middle ray (center of drone's view)
+            return ranges[len(ranges)//2]
+    except Exception:
+        return 10.0 # Default to clear path if error
+    return 10.0
+
+def run_pilot():
+    print('🤖 Auto-Pilot Engaged (CLI Mode): Flying the Warehouse...')
+    
+    while True:
+        dist = get_lidar_distance()
         
-        cmd = Twist()
-        if front_distance < 2.5:
-            print(f'🚧 Obstacle at {front_distance:.2f}m! Turning...')
-            cmd.linear.x = 0.2
-            cmd.angular.z = 0.6
+        if dist < 2.5:
+            print(f'🚧 Obstacle at {dist:.2f}m! Turning...')
+            # Using the exact same CLI method that made the launcher work:
+            os.system('gz topic -t "/model/drone/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.2}, angular: {z: 0.6}"')
         else:
-            cmd.linear.x = 0.8
-            cmd.angular.z = 0.0
-        self.pub.publish(cmd)
+            # Clear path
+            os.system('gz topic -t "/model/drone/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.8}, angular: {z: 0.0}"')
+        
+        time.sleep(0.1) # Check 10 times per second
 
 if __name__ == "__main__":
     try:
-        pilot = AutoPilot()
-        while True:
-            time.sleep(0.1)
+        run_pilot()
     except KeyboardInterrupt:
-        print('\nStopping...')
+        print('\nStopping Pilot...')
