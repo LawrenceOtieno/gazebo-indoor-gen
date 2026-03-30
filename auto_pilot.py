@@ -1,49 +1,36 @@
 import sys
 import time
-from gz.transport13 import Node
-# Using module imports to avoid DESCRIPTOR attribute errors
-from gz.msgs10 import twist_pb2
-from gz.msgs10 import laserscan_pb2
-
 # Force Python to see Gazebo libraries
 sys.path.append('/usr/lib/python3/dist-packages')
+
+from gz.transport13 import Node
+from gz.msgs10 import twist_pb2
+from gz.msgs10 import laserscan_pb2
 
 class AutoPilot:
     def __init__(self):
         self.node = Node()
-        # Explicitly referencing the Protobuf class
-        self.pub = self.node.advertise(twist_pb2.Twist, '/model/drone/cmd_vel')
+        # Using the string name of the message type to avoid DESCRIPTOR errors
+        self.pub = self.node.advertise(twist_pb2.Twist, '/model/drone/cmd_vel', 'gz.msgs.Twist')
         
-        # Subscribe to Lidar
-        success = self.node.subscribe(
-            laserscan_pb2.LaserScan, 
-            '/model/drone/device/lidar/scan', 
-            self.sensor_callback
-        )
+        # Subscribe using the same explicit type naming
+        self.node.subscribe(laserscan_pb2.LaserScan, '/model/drone/device/lidar/scan', self.sensor_callback, 'gz.msgs.LaserScan')
         
-        if success:
-            print('🤖 Auto-Pilot Engaged: Flying the Warehouse...')
-        else:
-            print('❌ Error: Lidar subscription failed!')
+        print('🤖 Auto-Pilot Engaged: Flying the Warehouse...')
 
     def sensor_callback(self, msg):
-        if not msg.ranges:
-            return
-            
-        # Check the middle of the Lidar scan (front of drone)
+        if not msg.ranges: return
         center_index = len(msg.ranges) // 2
         front_distance = msg.ranges[center_index]
         
         cmd = twist_pb2.Twist()
-        # Avoidance Logic
         if front_distance < 2.5:
             print(f'🚧 Obstacle at {front_distance:.2f}m! Turning...')
-            cmd.linear.x = 0.2    # Slow down
-            cmd.angular.z = 0.6   # Turn left
+            cmd.linear.x = 0.2
+            cmd.angular.z = 0.6
         else:
-            cmd.linear.x = 0.8    # Cruising speed
-            cmd.angular.z = 0.0   # Straight
-            
+            cmd.linear.x = 0.8
+            cmd.angular.z = 0.0
         self.pub.publish(cmd)
 
 if __name__ == "__main__":
@@ -52,4 +39,4 @@ if __name__ == "__main__":
         while True:
             time.sleep(0.1)
     except KeyboardInterrupt:
-        print('\nStopping Auto-Pilot...')
+        print('\nStopping...')
