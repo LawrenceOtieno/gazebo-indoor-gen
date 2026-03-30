@@ -42,7 +42,7 @@
 
     <model name="furniture_desk_1">
       <static>true</static>
-      <pose>6.0 1.0 0.01 0 0 0</pose> 
+      <pose>5.0 1.2 0.01 0 0 0</pose> 
       <link name="link">
         <visual name="top"><pose>0 0 0.75 0 0 0</pose><geometry><box><size>1.4 0.7 0.05</size></box></geometry><material><ambient>0.3 0.2 0.1 1</ambient><diffuse>0.4 0.2 0.1 1</diffuse></material></visual>
         <visual name="base"><pose>0 0 0.35 0 0 0</pose><geometry><box><size>1.2 0.5 0.7</size></box></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material></visual>
@@ -50,9 +50,25 @@
       </link>
     </model>
 
+    <model name="bookshelf_main">
+      <static>true</static>
+      <pose>8.0 -2.0 0.01 0 0 0.4</pose> <link name="link">
+        <visual name="frame">
+          <pose>0 0 1.0 0 0 0</pose>
+          <geometry><box><size>0.4 1.2 2.0</size></box></geometry>
+          <material><ambient>0.2 0.1 0.05 1</ambient><diffuse>0.25 0.15 0.1 1</diffuse></material>
+        </visual>
+        <visual name="book1"><pose>0.15 0.3 1.2 0 0 0</pose><geometry><box><size>0.1 0.05 0.3</size></box></geometry><material><diffuse>0.8 0.1 0.1 1</diffuse></material></visual>
+        <visual name="book2"><pose>0.15 0.1 1.2 0 0 0</pose><geometry><box><size>0.1 0.05 0.25</size></box></geometry><material><diffuse>0.1 0.1 0.8 1</diffuse></material></visual>
+        <visual name="book3"><pose>0.15 -0.2 0.8 0 0 0</pose><geometry><box><size>0.1 0.05 0.28</size></box></geometry><material><diffuse>0.1 0.7 0.1 1</diffuse></material></visual>
+        
+        <collision name="c"><pose>0 0 1.0 0 0 0</pose><geometry><box><size>0.4 1.2 2.0</size></box></geometry></collision>
+      </link>
+    </model>
+
     <model name="furniture_desk_2">
       <static>true</static>
-      <pose>10.0 -1.0 0.01 0 0 0</pose>
+      <pose>11.0 0.5 0.01 0 0 -0.3</pose>
       <link name="link">
         <visual name="top"><pose>0 0 0.75 0 0 0</pose><geometry><box><size>1.4 0.7 0.05</size></box></geometry><material><ambient>0.3 0.2 0.1 1</ambient><diffuse>0.4 0.2 0.1 1</diffuse></material></visual>
         <visual name="base"><pose>0 0 0.35 0 0 0</pose><geometry><box><size>1.2 0.5 0.7</size></box></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material></visual>
@@ -67,8 +83,7 @@
         <sensor name="camera" type="camera">
           <pose>0.15 0 0 0 0.2 0</pose>
           <camera>
-            <horizontal_fov>1.047</horizontal_fov>
-            <image><width>640</width><height>480</height></image>
+            <horizontal_fov>1.2</horizontal_fov> <image><width>640</width><height>480</height></image>
             <clip><near>0.1</near><far>100</far></clip>
           </camera>
           <always_on>1</always_on>
@@ -76,13 +91,8 @@
           <topic>camera</topic>
         </sensor>
         <sensor name="lidar" type="gpu_lidar">
-          <pose>0.15 0 0 0 0 0</pose>
           <topic>/model/drone/device/lidar/scan</topic>
-          <update_rate>10</update_rate>
-          <ray>
-            <scan><horizontal><samples>360</samples><min_angle>-3.14</min_angle><max_angle>3.14</max_angle></horizontal></scan>
-            <range><min>0.1</min><max>15.0</max></range>
-          </ray>
+          <ray><scan><horizontal><samples>360</samples></horizontal></scan><range><min>0.1</min><max>15.0</max></range></ray>
         </sensor>
       </link>
       <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl"><link_name>base_link</link_name></plugin>
