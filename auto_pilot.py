@@ -1,29 +1,29 @@
 import sys
 import time
-# Force Python to see Gazebo libraries
 sys.path.append('/usr/lib/python3/dist-packages')
 
 from gz.transport13 import Node
-from gz.msgs10 import twist_pb2
-from gz.msgs10 import laserscan_pb2
+from gz.msgs10.twist_pb2 import Twist
+from gz.msgs10.laserscan_pb2 import LaserScan
 
 class AutoPilot:
     def __init__(self):
         self.node = Node()
-        # Using the string name of the message type to avoid DESCRIPTOR errors
-        self.pub = self.node.advertise(twist_pb2.Twist, '/model/drone/cmd_vel', 'gz.msgs.Twist')
-        
-        # Subscribe using the same explicit type naming
-        self.node.subscribe(laserscan_pb2.LaserScan, '/model/drone/device/lidar/scan', self.sensor_callback, 'gz.msgs.LaserScan')
-        
+        # Instead of passing the variable 'Twist', we pass the class name directly
+        # and provide the type string as the second argument
+        self.pub = self.node.advertise(Twist, '/model/drone/cmd_vel')
+        self.node.subscribe(LaserScan, '/model/drone/device/lidar/scan', self.sensor_callback)
         print('🤖 Auto-Pilot Engaged: Flying the Warehouse...')
 
     def sensor_callback(self, msg):
+        # Local import inside the function can sometimes bypass the Descriptor error
+        from gz.msgs10.twist_pb2 import Twist
+        
         if not msg.ranges: return
         center_index = len(msg.ranges) // 2
         front_distance = msg.ranges[center_index]
         
-        cmd = twist_pb2.Twist()
+        cmd = Twist()
         if front_distance < 2.5:
             print(f'🚧 Obstacle at {front_distance:.2f}m! Turning...')
             cmd.linear.x = 0.2
