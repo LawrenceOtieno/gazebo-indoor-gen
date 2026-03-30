@@ -30,19 +30,16 @@ class DataCollector:
         self.last_image = None
         self.last_image_time = 0
         
-        # Matches the 'gz topic -l' output you shared
         cam_topic = "/camera"
         cmd_topic = "/model/drone/cmd_vel"
         
         print(f"📡 Subscribing to Camera: {cam_topic}")
         print(f"🕹️ Subscribing to Teleop: {cmd_topic}")
 
-        # Removed the extra string arguments to fix the TypeError
         self.node.subscribe(Image, cam_topic, self.image_callback)
         self.node.subscribe(Twist, cmd_topic, self.cmd_callback)
 
     def setup_directories(self):
-        # Ensure folders exist on your D: drive
         os.makedirs(IMAGE_DIR, exist_ok=True)
         if not os.path.isfile(CSV_FILE):
             with open(CSV_FILE, 'w', newline='') as f:
@@ -54,11 +51,8 @@ class DataCollector:
         self.last_image_time = msg.header.stamp.sec + (msg.header.stamp.nsec * 1e-9)
 
     def cmd_callback(self, msg):
-        # Only log data if we have a camera frame to pair with the command
         if self.last_image is None: 
             return
-        
-        # Save the pair immediately when a command is received
         self.save_pair(self.last_image, msg.linear.x, msg.angular.z)
 
     def save_pair(self, image_msg, lx, az):
@@ -67,13 +61,30 @@ class DataCollector:
         full_path = os.path.join(IMAGE_DIR, img_name)
         
         try:
-            # Convert Gazebo raw bytes to a format OpenCV understands
-            frame = np.frombuffer(image_msg.data, dtype=np.uint8).reshape((image_msg.height, image_msg.width, 3))
+            # 1. Robust Buffer Conversion
+            frame_raw = np.frombuffer(image_msg.data, dtype=np.uint8)
+            frame = frame_raw.reshape((image_msg.height, image_msg.width, 3))
             
-            # Save the image (RGB to BGR conversion for OpenCV)
-            cv2.imwrite(full_path, cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
+            # 2. Convert RGB to BGR for OpenCV
+            frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+            # 3. BLANK CHECK: Ignore frames that are solid gray/flat colors
+            # Standard gray in Gazebo is usually mean ~128 or very low variance
+            pixel_mean = np.mean(frame_bgr)
+            pixel_std = np.std(frame_bgr)
+
+            if pixel_std < 5.0: # If the image is too "flat" (no detail), skip it
+                print(f"⚠️  Skipping Blank/Gray Frame: {img_name} (No detail detected)")
+                return
+
+            # 4. Save the valid image
+            cv2.imwrite(full_path, frame_bgr)
             
-            # Record the telemetry to your CSV for the imitation learning training
+            # 5. Live Preview (Opens a window on your desktop)
+            cv2.imshow("Drone POV - Live Collection", frame_bgr)
+            cv2.waitKey(1) 
+            
+            # 6. Log to CSV
             with open(CSV_FILE, 'a', newline='') as f:
                 csv.writer(f).writerow([
                     self.last_image_time, 
@@ -82,10 +93,11 @@ class DataCollector:
                     az
                 ])
             
-            print(f"✅ DATA LOGGED: {img_name} | Linear X: {lx:.2f} | Angular Z: {az:.2f}")
+            print(f"✅ VALID DATA: {img_name} | LX: {lx:.2f} | AZ: {az:.2f}")
+
         except Exception as e:
-            # Silently skip frames that fail to reshape (common during startup)
-            pass
+            # Catching errors like reshaping failures
+            print(f"❌ Error processing frame: {e}")
 
 if __name__ == "__main__":
     try:
@@ -94,4 +106,5 @@ if __name__ == "__main__":
         while True: 
             time.sleep(1)
     except KeyboardInterrupt:
+        cv2.destroyAllWindows()
         print("\n--- STOPPED ---")
