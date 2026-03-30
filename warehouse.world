@@ -28,8 +28,13 @@
       <static>true</static>
       <pose>0 0 0.5 0 1.5708 0</pose> 
       <link name="link">
-        <visual name="v"><geometry><cylinder><radius>0.4</radius><length>2.5</length></cylinder></geometry><material><ambient>0.05 0.05 0.05 1</ambient></material></visual>
-        <collision name="c"><geometry><cylinder><radius>0.4</radius><length>2.5</length></cylinder></geometry></collision>
+        <visual name="v">
+          <geometry><cylinder><radius>0.4</radius><length>2.5</length></cylinder></geometry>
+          <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
+        </visual>
+        <collision name="c">
+          <geometry><cylinder><radius>0.4</radius><length>2.5</length></cylinder></geometry>
+        </collision>
       </link>
     </model>
 
@@ -64,10 +69,27 @@
     <model name="drone">
       <pose>-0.5 0 0.5 0 0 0</pose> 
       <link name="base_link">
-        <visual name="visual"><geometry><box><size>0.3 0.3 0.1</size></box></geometry><material><ambient>0 1 0 1</ambient></material></visual>
+        <visual name="visual">
+          <geometry><box><size>0.3 0.3 0.1</size></box></geometry>
+          <material><ambient>0 1 0 1</ambient></material>
+        </visual>
         <sensor name="camera" type="camera">
           <pose>0.15 0 0 0 0 0</pose>
-          <always_on>1</always_on><update_rate>30</update_rate><visualize>true</visualize><topic>camera</topic>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <visualize>true</visualize>
+          <topic>camera</topic>
+        </sensor>
+        <sensor name="lidar" type="gpu_lidar">
+          <pose>0.15 0 0 0 0 0</pose>
+          <topic>/model/drone/device/lidar/scan</topic>
+          <update_rate>10</update_rate>
+          <ray>
+            <scan>
+              <horizontal><samples>360</samples><resolution>1</resolution><min_angle>-3.14</min_angle><max_angle>3.14</max_angle></horizontal>
+            </scan>
+            <range><min>0.1</min><max>15.0</max></range>
+          </ray>
         </sensor>
       </link>
       <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl"><link_name>base_link</link_name></plugin>
