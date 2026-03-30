@@ -1,34 +1,80 @@
-<model name="warehouse_maze">
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="industrial_warehouse">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry></collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="launch_tube">
+      <static>true</static>
+      <pose>0 0 0.5 0 1.5708 0</pose> 
+      <link name="link">
+        <visual name="v"><geometry><cylinder><radius>0.4</radius><length>2.5</length></cylinder></geometry><material><ambient>0.05 0.05 0.05 1</ambient></material></visual>
+        <collision name="c"><geometry><cylinder><radius>0.4</radius><length>2.5</length></cylinder></geometry></collision>
+      </link>
+    </model>
+
+    <model name="warehouse_maze">
       <static>true</static>
       <pose>8 0 0 0 0 0</pose>
 
-      <link name="shelf_left">
-        <pose>0 2 2 0 0 0</pose>
-        <visual name="v">
-          <geometry><box><size>10 0.5 4</size></box></geometry>
-          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material>
-        </visual>
-        <collision name="c"><geometry><box><size>10 0.5 4</size></box></geometry></collision>
+      <link name="shelf_l"><pose>0 2.5 2 0 0 0</pose>
+        <visual name="v"><geometry><box><size>12 0.5 4</size></box></geometry><material><ambient>0.2 0.2 0.3 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>12 0.5 4</size></box></geometry></collision>
       </link>
 
-      <link name="shelf_right">
-        <pose>0 -2 2 0 0 0</pose>
-        <visual name="v">
-          <geometry><box><size>10 0.5 4</size></box></geometry>
-          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material>
-        </visual>
-        <collision name="c"><geometry><box><size>10 0.5 4</size></box></geometry></collision>
+      <link name="shelf_r"><pose>0 -2.5 2 0 0 0</pose>
+        <visual name="v"><geometry><box><size>12 0.5 4</size></box></geometry><material><ambient>0.2 0.2 0.3 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>12 0.5 4</size></box></geometry></collision>
       </link>
 
-      <link name="crate_1">
-        <pose>2 0.5 0.5 0 0 0.4</pose>
+      <link name="crate_1"><pose>-2 0 0.5 0 0 0.5</pose>
         <visual name="v"><geometry><box><size>1 1 1</size></box></geometry><material><ambient>0.5 0.3 0.1 1</ambient></material></visual>
         <collision name="c"><geometry><box><size>1 1 1</size></box></geometry></collision>
       </link>
-
-      <link name="crate_2">
-        <pose>5 -0.8 0.5 0 0 -0.2</pose>
+      <link name="crate_2"><pose>3 0.8 0.5 0 0 -0.3</pose>
         <visual name="v"><geometry><box><size>1 1 1</size></box></geometry><material><ambient>0.5 0.3 0.1 1</ambient></material></visual>
         <collision name="c"><geometry><box><size>1 1 1</size></box></geometry></collision>
       </link>
     </model>
+
+    <model name="drone">
+      <pose>-0.5 0 0.5 0 0 0</pose> 
+      <link name="base_link">
+        <visual name="visual"><geometry><box><size>0.3 0.3 0.1</size></box></geometry><material><ambient>0 1 0 1</ambient></material></visual>
+        <sensor name="camera" type="camera">
+          <pose>0.15 0 0 0 0 0</pose>
+          <always_on>1</always_on><update_rate>30</update_rate><visualize>true</visualize><topic>camera</topic>
+        </sensor>
+      </link>
+      <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl"><link_name>base_link</link_name></plugin>
+    </model>
+  </world>
+</sdf>
