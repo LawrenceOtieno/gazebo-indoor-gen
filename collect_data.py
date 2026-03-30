@@ -17,7 +17,8 @@ from gz.msgs10.twist_pb2 import Twist
 # ==========================================
 PROJECT_ROOT = "/mnt/d/Projects/gazebo-indoor-gen"
 DATASET_NAME = "drone_dataset"
-CURRENT_ENV  = "warehouse" 
+# Changing environment to 'office' for the second phase of your thesis
+CURRENT_ENV  = "office" 
 
 SAVE_DIR = os.path.join(PROJECT_ROOT, DATASET_NAME, CURRENT_ENV)
 IMAGE_DIR = os.path.join(SAVE_DIR, "images")
@@ -35,11 +36,13 @@ class DataCollector:
         
         print(f"📡 Subscribing to Camera: {cam_topic}")
         print(f"🕹️ Subscribing to Teleop: {cmd_topic}")
+        print(f"📂 Saving to: {SAVE_DIR}")
 
         self.node.subscribe(Image, cam_topic, self.image_callback)
         self.node.subscribe(Twist, cmd_topic, self.cmd_callback)
 
     def setup_directories(self):
+        # Creates drone_dataset/office/images/ automatically
         os.makedirs(IMAGE_DIR, exist_ok=True)
         if not os.path.isfile(CSV_FILE):
             with open(CSV_FILE, 'w', newline='') as f:
@@ -53,6 +56,7 @@ class DataCollector:
     def cmd_callback(self, msg):
         if self.last_image is None: 
             return
+        # Save the pair immediately when a command is received
         self.save_pair(self.last_image, msg.linear.x, msg.angular.z)
 
     def save_pair(self, image_msg, lx, az):
@@ -69,19 +73,18 @@ class DataCollector:
             frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
             # 3. BLANK CHECK: Ignore frames that are solid gray/flat colors
-            # Standard gray in Gazebo is usually mean ~128 or very low variance
-            pixel_mean = np.mean(frame_bgr)
+            # Essential to prevent 'dataset poisoning' in your thesis model
             pixel_std = np.std(frame_bgr)
 
-            if pixel_std < 5.0: # If the image is too "flat" (no detail), skip it
-                print(f"⚠️  Skipping Blank/Gray Frame: {img_name} (No detail detected)")
+            if pixel_std < 5.0: 
+                print(f"⚠️  Skipping Blank Frame: {img_name} (Standard Deviation too low: {pixel_std:.2f})")
                 return
 
             # 4. Save the valid image
             cv2.imwrite(full_path, frame_bgr)
             
-            # 5. Live Preview (Opens a window on your desktop)
-            cv2.imshow("Drone POV - Live Collection", frame_bgr)
+            # 5. Live Preview (Ensures you can see the Office environment in real-time)
+            cv2.imshow("Drone POV - Office Collection", frame_bgr)
             cv2.waitKey(1) 
             
             # 6. Log to CSV
@@ -93,16 +96,15 @@ class DataCollector:
                     az
                 ])
             
-            print(f"✅ VALID DATA: {img_name} | LX: {lx:.2f} | AZ: {az:.2f}")
+            print(f"✅ OFFICE DATA: {img_name} | LX: {lx:.2f} | AZ: {az:.2f}")
 
         except Exception as e:
-            # Catching errors like reshaping failures
             print(f"❌ Error processing frame: {e}")
 
 if __name__ == "__main__":
     try:
         collector = DataCollector()
-        print("--- RECORDING IN PROGRESS ---")
+        print("--- OFFICE RECORDING IN PROGRESS ---")
         while True: 
             time.sleep(1)
     except KeyboardInterrupt:
