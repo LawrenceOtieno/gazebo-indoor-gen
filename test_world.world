@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.8">
-  <world name="drone_indoor_world">
+  <world name="office_world">
     <physics name="1ms" type="ignored">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
@@ -16,56 +16,84 @@
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
       <pose>0 0 10 0 0 0</pose>
-      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
       <specular>0.2 0.2 0.2 1</specular>
       <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <light type="point" name="hallway_light">
+      <pose>5 0 2.5 0 0 0</pose>
+      <diffuse>0.7 0.7 0.6 1</diffuse>
+      <attenuation><range>15</range><constant>0.5</constant></attenuation>
     </light>
 
     <model name="ground_plane">
       <static>true</static>
       <link name="link">
-        <collision name="collision">
-          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
-        </collision>
+        <collision name="collision"><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry></collision>
         <visual name="visual">
           <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
           <material>
-            <ambient>0.8 0.8 0.8 1</ambient>
-            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <ambient>0.2 0.2 0.2 1</ambient>
+            <diffuse>0.2 0.2 0.2 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
           </material>
         </visual>
       </link>
     </model>
 
+    <model name="office_corridor">
+      <static>true</static>
+      <pose>6 0 0 0 0 0</pose>
+      <link name="wall_left">
+        <pose>0 1.2 1.25 0 0 0</pose>
+        <visual name="v"><geometry><box><size>12 0.1 2.5</size></box></geometry><material><ambient>0.9 0.9 0.8 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>12 0.1 2.5</size></box></geometry></collision>
+      </link>
+      <link name="wall_right">
+        <pose>0 -1.2 1.25 0 0 0</pose>
+        <visual name="v"><geometry><box><size>12 0.1 2.5</size></box></geometry><material><ambient>0.9 0.9 0.8 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>12 0.1 2.5</size></box></geometry></collision>
+      </link>
+      <link name="ceiling">
+        <pose>0 0 2.5 0 0 0</pose>
+        <visual name="v"><geometry><box><size>12 2.5 0.05</size></box></geometry><material><ambient>0.7 0.7 0.7 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>12 2.5 0.05</size></box></geometry></collision>
+      </link>
+      <link name="door_1">
+        <pose>-2 1.15 1.0 0 0 0</pose>
+        <visual name="v"><geometry><box><size>0.9 0.08 2.0</size></box></geometry><material><ambient>0.4 0.2 0.1 1</ambient></material></visual>
+      </link>
+    </model>
+
+    <include>
+      <name>chair_1</name>
+      <uri>model://beam_chair</uri>
+      <pose>4.0 0.5 0 0 0 0.8</pose>
+    </include>
+    
+    <include>
+      <name>chair_2</name>
+      <uri>model://beam_chair</uri>
+      <pose>7.5 -0.5 0 0 0 -0.8</pose>
+    </include>
+
     <model name="drone">
-      <pose>0 0 0.5 0 0 0</pose>
-      <link name="base_link">
-        <collision name="collision">
-          <geometry><box><size>0.4 0.4 0.1</size></box></geometry>
-        </collision>
+      <pose>1.0 0 0.4 0 0 0</pose> <link name="base_link">
         <visual name="visual">
-          <geometry><box><size>0.4 0.4 0.1</size></box></geometry>
-          <material>
-            <ambient>0 1 0 1</ambient>
-            <diffuse>0 1 0 1</diffuse>
-          </material>
+          <geometry><box><size>0.3 0.3 0.1</size></box></geometry>
+          <material><ambient>0 1 0 1</ambient></material>
         </visual>
-        
         <sensor name="camera" type="camera">
-          <pose>0.2 0 0 0 0 0</pose>
+          <pose>0.15 0 0 0 0 0</pose>
           <always_on>1</always_on>
           <update_rate>30</update_rate>
           <visualize>true</visualize>
-          <topic>model/drone/device/depth_camera/image</topic>
+          <topic>camera</topic>
         </sensor>
       </link>
-      
-      <plugin
-        filename="gz-sim-velocity-control-system"
-        name="gz::sim::systems::VelocityControl">
+      <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl">
         <link_name>base_link</link_name>
       </plugin>
     </model>
-
   </world>
 </sdf>
