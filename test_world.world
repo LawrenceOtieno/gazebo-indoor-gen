@@ -32,28 +32,30 @@
       </link>
     </model>
 
-    <model name="office_layout">
+    <model name="office_labyrinth">
       <static>true</static>
-      <link name="main_wall_top"><pose>5 1.5 1.25 0 0 0</pose>
-        <visual name="v"><geometry><box><size>10 0.1 2.5</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient></material></visual>
-        <collision name="c"><geometry><box><size>10 0.1 2.5</size></box></geometry></collision>
+      
+      <link name="entry_wall_l"><pose>2 1.2 1.25 0 0 0</pose>
+        <visual name="v"><geometry><box><size>4 0.1 2.5</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>4 0.1 2.5</size></box></geometry></collision>
       </link>
-      <link name="main_wall_bottom"><pose>3 -1.5 1.25 0 0 0</pose>
-        <visual name="v"><geometry><box><size>6 0.1 2.5</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient></material></visual>
-        <collision name="c"><geometry><box><size>6 0.1 2.5</size></box></geometry></collision>
+      <link name="entry_wall_r"><pose>2 -1.2 1.25 0 0 0</pose>
+        <visual name="v"><geometry><box><size>4 0.1 2.5</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>4 0.1 2.5</size></box></geometry></collision>
       </link>
 
-      <link name="side_wall_left"><pose>6.5 -4 1.25 0 0 1.57</pose>
-        <visual name="v"><geometry><box><size>5 0.1 2.5</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient></material></visual>
-        <collision name="c"><geometry><box><size>5 0.1 2.5</size></box></geometry></collision>
-      </link>
-      <link name="side_wall_right"><pose>9.5 -4 1.25 0 0 1.57</pose>
-        <visual name="v"><geometry><box><size>5 0.1 2.5</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient></material></visual>
-        <collision name="c"><geometry><box><size>5 0.1 2.5</size></box></geometry></collision>
+      <link name="cross_wall_back"><pose>8 0 1.25 0 0 1.5708</pose>
+        <visual name="v"><geometry><box><size>6 0.1 2.5</size></box></geometry><material><ambient>0.8 0.8 0.8 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>6 0.1 2.5</size></box></geometry></collision>
       </link>
       
+      <link name="pillar"><pose>5 0 1.25 0 0 0</pose>
+        <visual name="v"><geometry><box><size>1.0 1.0 2.5</size></box></geometry><material><ambient>0.3 0.3 0.3 1</ambient></material></visual>
+        <collision name="c"><geometry><box><size>1.0 1.0 2.5</size></box></geometry></collision>
+      </link>
+
       <link name="ceiling"><pose>5 0 2.5 0 0 0</pose>
-        <visual name="v"><geometry><box><size>15 10 0.1</size></box></geometry><material><ambient>0.8 0.8 0.8 0.5</ambient></material></visual>
+        <visual name="v"><geometry><box><size>12 6 0.05</size></box></geometry><material><ambient>0.7 0.7 0.7 0.3</ambient></material></visual>
       </link>
     </model>
 
@@ -90,6 +92,9 @@
           <topic>camera</topic>
         </sensor>
       </link>
+      <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl">
+        <link_name>base_link</link_name>
+      </plugin>
     </model>
   </world>
 </sdf>
