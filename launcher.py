@@ -1,30 +1,21 @@
-import sys
+import os
 import time
-# Force Python to see Gazebo libraries
-sys.path.append('/usr/lib/python3/dist-packages')
-
-from gz.transport13 import Node
-from gz.msgs10 import twist_pb2
 
 def launch_drone():
-    node = Node()
-    # Explicitly providing the Gazebo message type name 'gz.msgs.Twist'
-    pub = node.advertise(twist_pb2.Twist, '/model/drone/cmd_vel', 'gz.msgs.Twist')
-    
     print("🚀 Launcher Armed: Pressurizing Tube...")
     time.sleep(3)
     
     print("🔥 EJECT!")
-    launch_cmd = twist_pb2.Twist()
-    launch_cmd.linear.x = 15.0
-    launch_cmd.linear.z = 0.5
+    # We use the direct CLI command to bypass the Python API bug
+    # This sends 15m/s forward and 0.5m/s up
+    os.system('gz topic -t "/model/drone/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 15.0, z: 0.5}"')
     
-    start_time = time.time()
-    while time.time() - start_time < 0.4:
-        pub.publish(launch_cmd)
-        time.sleep(0.01)
-
-    print("✨ TUBE CLEAR.")
+    # Keep the pressure on for half a second
+    time.sleep(0.5)
+    
+    print("✨ TUBE CLEAR. Handing over to Auto-Pilot...")
+    # Stabilize
+    os.system('gz topic -t "/model/drone/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 1.0}"')
 
 if __name__ == "__main__":
     launch_drone()
