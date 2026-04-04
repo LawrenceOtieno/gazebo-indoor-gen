@@ -14,24 +14,27 @@ class AutoPilot:
         self.node = Node()
         self.pub = self.node.advertise("/model/drone/cmd_vel", Twist)
         
-        # Subscribing to the Lidar topic defined in your warehouse.world
+        # Subscribing to the Lidar topic
         lidar_topic = "/model/drone/device/lidar/scan"
         self.node.subscribe(LaserScan, lidar_topic, self.lidar_callback)
         
-        # AGGRESSIVE TUNING PARAMETERS
-        self.target_linear_vel = 1.8   # Faster forward speed (m/s)
-        self.turn_sensitivity = 2.5    # How hard it swerves (Multiplier)
-        self.safety_distance = 2.2     # Distance in meters to trigger a turn
+        # UPDATED FOR HIGH-SPEED NAVIGATION (2.5 m/s)
+        self.target_linear_vel = 2.5   # Target cruise speed (m/s)
+        self.turn_sensitivity = 3.0    # Increased to handle sharper turns at speed
+        self.safety_distance = 3.5     # Increased look-ahead distance for 2.5m/s velocity
         
         print(f"🤖 Auto-Pilot Active on {lidar_topic}")
-        print(f"⚙️  Settings: Speed={self.target_linear_vel}, Sensitivity={self.turn_sensitivity}")
+        print(f"⚙️  Settings: Cruise Speed={self.target_linear_vel}, Safety Gap={self.safety_distance}m")
 
     def lidar_callback(self, msg):
+        # Handle potential empty or malformed lidar messages
+        if not msg.ranges:
+            return
+
         ranges = np.array(msg.ranges)
         
         # 1. Split Lidar into 3 sectors: Left, Center (Front), Right
-        # Your lidar has 360 samples (-3.14 to 3.14 radians)
-        # Center is roughly indices 150 to 210
+        # Center is roughly indices 150 to 210 for a 360-sample scan
         center_idx = len(ranges) // 2
         front_sector = ranges[center_idx-30 : center_idx+30]
         left_sector  = ranges[center_idx+31 : center_idx+90]
@@ -44,17 +47,18 @@ class AutoPilot:
 
         if min_front < self.safety_distance:
             # OBSTACLE DETECTED: Swerve aggressively
-            drive_cmd.linear.x = 0.5  # Slow down while turning
+            # Drop to a safe speed while maneuvering
+            drive_cmd.linear.x = 0.8  
             
             # Decide direction based on which side has more clear space
             if np.mean(left_sector) > np.mean(right_sector):
-                drive_cmd.angular.z = self.turn_sensitivity  # Turn Left
+                drive_cmd.angular.z = self.turn_sensitivity   # Turn Left
             else:
-                drive_cmd.angular.z = -self.turn_sensitivity # Turn Right
+                drive_cmd.angular.z = -self.turn_sensitivity  # Turn Right
                 
-            print(f"🚨 AVOIDING OBSTACLE! Dist: {min_front:.2f}m | Swerving...")
+            print(f"🚨 AVOIDING OBSTACLE! Dist: {min_front:.2f}m | Swerving at speed...")
         else:
-            # PATH CLEAR: Full speed ahead with minor corrections
+            # PATH CLEAR: Full cruise speed ahead
             drive_cmd.linear.x = self.target_linear_vel
             drive_cmd.angular.z = 0.0
             
