@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.8">
-  <world name="dual_room_office">
+  <world name="dual_room_office_high_speed">
     <physics name="1ms" type="ignored">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
@@ -23,9 +23,9 @@
     <model name="office_floor">
       <static>true</static>
       <link name="link">
-        <collision name="c"><geometry><plane><normal>0 0 1</normal><size>60 20</size></plane></geometry></collision>
+        <collision name="c"><geometry><plane><normal>0 0 1</normal><size>120 40</size></plane></geometry></collision>
         <visual name="v">
-          <geometry><plane><normal>0 0 1</normal><size>60 20</size></plane></geometry>
+          <geometry><plane><normal>0 0 1</normal><size>120 40</size></plane></geometry>
           <material><ambient>0.4 0.25 0.1 1</ambient><diffuse>0.5 0.3 0.15 1</diffuse></material>
         </visual>
       </link>
@@ -43,40 +43,40 @@
             <specular>0.8 0.8 0.8 1</specular>
           </material>
         </visual>
-        </link>
+      </link>
     </model>
 
     <model name="building_layout">
       <static>true</static>
       <link name="walls">
-        <visual name="r1_w1"><pose>7 3 1.5 0 0 0</pose><geometry><box><size>14 0.1 3</size></box></geometry></visual>
-        <visual name="r1_w2"><pose>7 -3 1.5 0 0 0</pose><geometry><box><size>14 0.1 3</size></box></geometry></visual>
+        <visual name="r1_w1"><pose>17.5 3 1.5 0 0 0</pose><geometry><box><size>35 0.1 3</size></box></geometry></visual>
+        <visual name="r1_w2"><pose>17.5 -3 1.5 0 0 0</pose><geometry><box><size>35 0.1 3</size></box></geometry></visual>
         
-        <visual name="corr_w1"><pose>16 0.75 1.5 0 0 0</pose><geometry><box><size>4 0.1 3</size></box></geometry></visual>
-        <visual name="corr_w2"><pose>16 -0.75 1.5 0 0 0</pose><geometry><box><size>4 0.1 3</size></box></geometry></visual>
-        <collision name="corr_c1"><pose>16 0.75 1.5 0 0 0</pose><geometry><box><size>4 0.1 3</size></box></geometry></collision>
-        <collision name="corr_c2"><pose>16 -0.75 1.5 0 0 0</pose><geometry><box><size>4 0.1 3</size></box></geometry></collision>
+        <visual name="corr_w1"><pose>37.5 0.75 1.5 0 0 0</pose><geometry><box><size>5 0.1 3</size></box></geometry></visual>
+        <visual name="corr_w2"><pose>37.5 -0.75 1.5 0 0 0</pose><geometry><box><size>5 0.1 3</size></box></geometry></visual>
+        <collision name="corr_c1"><pose>37.5 0.75 1.5 0 0 0</pose><geometry><box><size>5 0.1 3</size></box></geometry></collision>
+        <collision name="corr_c2"><pose>37.5 -0.75 1.5 0 0 0</pose><geometry><box><size>5 0.1 3</size></box></geometry></collision>
 
-        <visual name="r2_w1"><pose>23 4 1.5 0 0 0</pose><geometry><box><size>10 0.1 3</size></box></geometry></visual>
-        <visual name="r2_w2"><pose>23 -4 1.5 0 0 0</pose><geometry><box><size>10 0.1 3</size></box></geometry></visual>
-        <visual name="back_wall"><pose>28 0 1.5 0 0 1.57</pose><geometry><box><size>8 0.1 3</size></box></geometry></visual>
-        <collision name="r2_c1"><pose>23 4 1.5 0 0 0</pose><geometry><box><size>10 0.1 3</size></box></geometry></collision>
-        <collision name="r2_c2"><pose>23 -4 1.5 0 0 0</pose><geometry><box><size>10 0.1 3</size></box></geometry></collision>
-        <collision name="back_c"><pose>28 0 1.5 0 0 1.57</pose><geometry><box><size>8 0.1 3</size></box></geometry></collision>
+        <visual name="r2_w1"><pose>55 4 1.5 0 0 0</pose><geometry><box><size>30 0.1 3</size></box></geometry></visual>
+        <visual name="r2_w2"><pose>55 -4 1.5 0 0 0</pose><geometry><box><size>30 0.1 3</size></box></geometry></visual>
+        <visual name="back_wall"><pose>70 0 1.5 0 0 1.57</pose><geometry><box><size>8 0.1 3</size></box></geometry></visual>
+        
+        <collision name="r2_c1"><pose>55 4 1.5 0 0 0</pose><geometry><box><size>30 0.1 3</size></box></geometry></collision>
+        <collision name="r2_c2"><pose>55 -4 1.5 0 0 0</pose><geometry><box><size>30 0.1 3</size></box></geometry></collision>
+        <collision name="back_c"><pose>70 0 1.5 0 0 1.57</pose><geometry><box><size>8 0.1 3</size></box></geometry></collision>
       </link>
     </model>
 
-    <model name="r1_desk"><static>true</static><pose>6.0 1.2 0.01 0 0 0</pose>
-      <link name="l"><visual name="v"><pose>0 0 0.4 0 0 0</pose><geometry><box><size>1.4 0.7 0.8</size></box></geometry></visual><collision name="c"><pose>0 0 0.4 0 0 0</pose><geometry><box><size>1.4 0.7 0.8</size></box></geometry></collision></link>
+    <model name="r1_desk"><static>true</static><pose>25.0 1.2 0.01 0 0 0</pose>
+      <link name="l"><visual name="v"><pose>0 0 0.4 0 0 0</pose><geometry><box><size>1.4 0.7 0.8</size></box></geometry></visual>
+      <collision name="c"><pose>0 0 0.4 0 0 0</pose><geometry><box><size>1.4 0.7 0.8</size></box></geometry></collision></link>
     </model>
 
     <model name="r2_bookshelf">
       <static>true</static>
-      <pose>22.0 -2.5 0.01 0 0 0.8</pose>
+      <pose>50.0 -2.5 0.01 0 0 0.8</pose>
       <link name="link">
         <visual name="frame"><pose>0 0 1.0 0 0 0</pose><geometry><box><size>0.4 1.5 2.0</size></box></geometry><material><diffuse>0.2 0.1 0.05 1</diffuse></material></visual>
-        <visual name="book_r"><pose>0.15 0.2 1.2 0 0 0</pose><geometry><box><size>0.1 0.05 0.3</size></box></geometry><material><diffuse>0.8 0 0 1</diffuse></material></visual>
-        <visual name="book_b"><pose>0.15 0.0 1.2 0 0 0</pose><geometry><box><size>0.1 0.05 0.25</size></box></geometry><material><diffuse>0 0 0.8 1</diffuse></material></visual>
         <collision name="c"><pose>0 0 1.0 0 0 0</pose><geometry><box><size>0.4 1.5 2.0</size></box></geometry></collision>
       </link>
     </model>
@@ -92,7 +92,9 @@
         </sensor>
         <sensor name="lidar" type="gpu_lidar">
           <topic>/model/drone/device/lidar/scan</topic>
-          <ray><scan><horizontal><samples>360</samples></horizontal></scan><range><min>0.1</min><max>15.0</max></range></ray>
+          <ray>
+            <scan><horizontal><samples>360</samples></horizontal></scan>
+            <range><min>0.1</min><max>30.0</max></range> </ray>
         </sensor>
       </link>
       <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl"><link_name>base_link</link_name></plugin>
