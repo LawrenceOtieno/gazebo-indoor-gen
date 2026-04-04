@@ -94,10 +94,16 @@
           <topic>/model/drone/device/lidar/scan</topic>
           <ray>
             <scan><horizontal><samples>360</samples></horizontal></scan>
-            <range><min>0.1</min><max>30.0</max></range> </ray>
+            <range><min>0.1</min><max>30.0</max></range> 
+          </ray>
         </sensor>
       </link>
-      <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl"><link_name>base_link</link_name></plugin>
+      
+      <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl">
+        <link_name>base_link</link_name>
+        <max_linear_acceleration>100.0</max_linear_acceleration>
+        <max_angular_acceleration>50.0</max_angular_acceleration>
+      </plugin>
     </model>
   </world>
 </sdf>
