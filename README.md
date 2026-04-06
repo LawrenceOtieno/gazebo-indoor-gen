@@ -36,12 +36,12 @@ The UAV operates under a dual-velocity constraint to test stability during high-
 ## 📥 Data Collection & Training
 We utilize a synchronized pipeline to capture RGB camera frames and mavlink control telemetry for the `drone_dataset`.
 
-* **Expert Data Collection:** Real-time logging of expert maneuvers.
-* **Dataset Preview:** Synchronized frame-by-frame data for Behavioral Cloning.
+* **Expert Data Collection:** Real-time logging of expert maneuvers using `collect_data.py`.
+* **Dataset Preview:** Synchronized frame-by-frame data for Behavioral Cloning and DAgger workflows.
 
 | **Collector Interface** | **Dataset Samples** |
 | :---: | :---: |
-| ![Collector Script](./assets/screenshots/collector_01.png) | ![Dataset Grid](./assets/screenshots/collector_02.png) |
+| <img src="./assets/screenshots/collector_01.png" width="350"> | <img src="./assets/screenshots/collector_02.png" width="350"> |
 
 ---
 
@@ -56,7 +56,7 @@ We utilize a synchronized pipeline to capture RGB camera frames and mavlink cont
 ### 2. Setup Environment
 Clone the repository and initialize the simulation assets:
 ```bash
-git clone [https://github.com/your-username/gazebo-indoor-gen.git](https://github.com/your-username/gazebo-indoor-gen.git)
+git clone [https://github.com/LawrenceOtieno/gazebo-indoor-gen.git](https://github.com/LawrenceOtieno/gazebo-indoor-gen.git)
 cd gazebo-indoor-gen
 chmod +x setup.sh run_mission.sh
 ./setup.sh
