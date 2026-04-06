@@ -40,6 +40,27 @@ We utilize a synchronized pipeline to capture RGB camera frames and telemetry.
 
 ---
 
+## 🌎 Simulation Environments
+We utilize domain randomization to train the UAV across various indoor layouts, ensuring robust obstacle avoidance.
+
+| **Office Complex** | **Warehouse Logistics** |
+| :---: | :---: |
+| <img src="assets/screenshots/launch_01.PNG" width="400"> | <img src="assets/screenshots/launch_02.PNG" width="400"> |
+
+---
+
+## 💻 Implementation Details
+<details>
+<summary><b>Click to view core logic (Python & Bash)</b></summary>
+
+| **Master Orchestration** | **Telemetry Processing** |
+| :---: | :---: |
+| <img src="assets/screenshots/bash_02.PNG" width="400"> | <img src="assets/screenshots/script_02.PNG" width="400"> |
+
+</details>
+
+---
+
 ## 🛠️ Installation & Usage
 
 ### 1. Setup Environment
