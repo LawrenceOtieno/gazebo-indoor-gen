@@ -72,7 +72,7 @@ cd gazebo-indoor-gen
 ---
 
 ```
-🛠️ Engineering & Development Workflow
+## 🛠️ Engineering & Development Workflow
 
 
 This project served as a comprehensive application of robotics engineering and software best practices:
