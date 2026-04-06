@@ -71,12 +71,15 @@ cd gazebo-indoor-gen
 
 ---
 
-## 🛠️ Engineering & Development Workflow
+🛠️ Engineering & Development Workflow
+
+
 This project served as a comprehensive application of robotics engineering and software best practices:
 
-* **Python Scripting & System Integration:** Developed modular nodes to bridge PX4 telemetry with Imitation Learning inference engines, ensuring sub-millisecond data synchronization.
-* **Automation:** Engineered bash-driven pipelines (`bash_02.PNG`) for procedural world generation, allowing for rapid dataset expansion via domain randomization.
-* **Testing & Debugging:** Conducted extensive **Software-in-the-Loop (SITL)** testing to identify and resolve high-speed cornering instabilities and sensor-fusion lag during the kinetic launch phase.
-* **Version Control & Repository Management:** Maintained a clean, documented Git workflow to manage complex dependencies across ROS, Gazebo, and the IL training pipeline.
-# (End of your Installation code block)
-./setup.sh
+Python Scripting & System Integration: Developed modular nodes to bridge PX4 telemetry with Imitation Learning inference engines, ensuring sub-millisecond data synchronization.
+
+Automation: Engineered bash-driven pipelines (bash_02.PNG) for procedural world generation, allowing for rapid dataset expansion via domain randomization.
+
+Testing & Debugging: Conducted extensive Software-in-the-Loop (SITL) testing to identify and resolve high-speed cornering instabilities and sensor-fusion lag during the kinetic launch phase.
+
+Version Control & Repository Management: Maintained a clean, documented Git workflow to manage complex dependencies across ROS, Gazebo, and the IL training pipeline.
