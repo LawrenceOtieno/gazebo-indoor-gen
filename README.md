@@ -11,20 +11,20 @@ This repository provides a high-fidelity simulation framework for training auton
 ---
 
 ## 📊 System Architecture
-The following flowchart illustrates the expert-directed IL pipeline and the synchronization of camera feeds with control telemetry.
+The following flowchart illustrates the expert-directed IL pipeline.
 
 <p align="center">
-  <img src="assets/screenshots/system_architecture.png" alt="System Architecture" width="800">
+  <img src="assets/screenshots/system_architecture.PNG" alt="System Architecture" width="800">
 </p>
 
 ---
 
 ## 🚁 Flight Mission Phases
-The UAV operates under a dual-velocity constraint to test stability during high-speed transitions and precision during indoor navigation.
+The UAV operates under a dual-velocity constraint to test stability and precision.
 
 | **Stage 1: Kinetic Launch** | **Stage 2: Autonomous Navigation** |
 | :---: | :---: |
-| <img src="assets/screenshots/launch_04.png" width="350"> | <img src="assets/screenshots/launch_05.png" width="350"> |
+| <img src="assets/screenshots/launch_04.PNG" width="350"> | <img src="assets/screenshots/launch_05.PNG" width="350"> |
 | **Velocity:** 15.0 m/s | **Velocity:** 5.5 m/s |
 | **Duration:** 2.0s | **Control:** IL Inference |
 | **Mechanism:** `launcher.py` | **Mechanism:** `auto_pilot.py` |
@@ -32,25 +32,18 @@ The UAV operates under a dual-velocity constraint to test stability during high-
 ---
 
 ## 📥 Data Collection & Training
-We utilize a synchronized pipeline to capture RGB camera frames and mavlink control telemetry for the `drone_dataset`.
+We utilize a synchronized pipeline to capture RGB camera frames and telemetry.
 
 | **Collector Interface** | **Dataset Samples** |
 | :---: | :---: |
-| <img src="assets/screenshots/collector_01.png" width="350"> | <img src="assets/screenshots/collector_02.png" width="350"> |
+| <img src="assets/screenshots/collector_01.PNG" width="350"> | <img src="assets/screenshots/collector_02.PNG" width="350"> |
 
 ---
 
 ## 🛠️ Installation & Usage
 
-### 1. Prerequisites
-* **ROS Noetic / Melodic**
-* **Gazebo 11**
-* **PX4 Autopilot (SITL)**
-* Python 3.8+ (See `requirements.txt`)
-
-### 2. Setup Environment
+### 1. Setup Environment
 ```bash
 git clone [https://github.com/LawrenceOtieno/gazebo-indoor-gen.git](https://github.com/LawrenceOtieno/gazebo-indoor-gen.git)
 cd gazebo-indoor-gen
-chmod +x setup.sh run_mission.sh
 ./setup.sh
